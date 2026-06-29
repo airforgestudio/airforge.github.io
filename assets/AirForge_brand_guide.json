@@ -1,0 +1,28 @@
+{
+  "product": "AirForge Studio",
+  "source_files": [
+    "AirForge(1).ico",
+    "AirForgeStudio72_A117 (2).py"
+  ],
+  "colors": {
+    "origin_navy": "#07101A",
+    "panel": "#0D1824",
+    "line": "#1E2F43",
+    "white": "#F5F7FA",
+    "muted": "#AEBBCA",
+    "blue": "#21B6F3",
+    "bright_blue": "#4EA1FF",
+    "deep_blue": "#123456",
+    "soft": "#7F8FA3",
+    "track_blue": "#3B82F6",
+    "track_green": "#22C55E",
+    "track_purple": "#A855F7",
+    "track_orange": "#F97316"
+  },
+  "typography": {
+    "app_primary": "Segoe UI",
+    "web_fallback": "Segoe UI, Inter, Roboto, Arial, sans-serif",
+    "note": "Font files are not included. Use system Segoe UI on Windows or licensed web fonts."
+  },
+  "notes": "Assets generated from the uploaded AirForge icon and the splash-screen drawing routine in the current Python source."
+}
