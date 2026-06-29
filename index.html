@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AirForge Studio | Broadcast Audio Production Suite</title>
+  <meta name="description" content="AirForge Studio — radio-first broadcast audio production. Multitrack Producer, waveform Editor, SCOT metadata, Intro/EOM markers, WideOrbit-ready export, and batch processing.">
+  <link rel="icon" href="site-assets/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:    #04080E;
+      --bg2:   #07101A;
+      --panel: #0D1824;
+      --edge:  #1A2D42;
+      --blue:  #21B6F3;
+      --blue2: #4EA1FF;
+      --cyan:  #28D8FF;
+      --white: #F0F6FF;
+      --muted: #8EA8C0;
+      --soft:  #4A6480;
+      --green: #22C55E;
+      --purple:#A855F7;
+      --orange:#F97316;
+      --amber: #F59E0B;
+      --red:   #FF3158;
+      --r: 18px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        linear-gradient(rgba(33,182,243,.024) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(33,182,243,.018) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.8) 0%, transparent 65%);
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    .wrap { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+
+    /* ── NAV ── */
+    .nav-shell {
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(33,182,243,.1);
+      background: rgba(4,8,14,.85);
+      backdrop-filter: blur(20px);
+    }
+    nav {
+      height: 68px; display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
+    }
+    .nav-logo { height: 36px; filter: drop-shadow(0 0 12px rgba(33,182,243,.2)); }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      font-size: 12px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .nav-links a { transition: color .15s; }
+    .nav-links a:hover { color: var(--cyan); }
+    .nav-cta {
+      padding: 10px 20px; border-radius: 10px;
+      background: linear-gradient(135deg, #0B7CFF, #0553D0);
+      color: #fff !important; font-size: 12px; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      box-shadow: 0 8px 24px rgba(11,124,255,.3);
+      transition: .15s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(11,124,255,.42); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 68px);
+      display: grid; align-items: center;
+      padding: 80px 0 60px;
+      overflow: hidden;
+    }
+    /* Subtle radial glows — no images here */
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 55% at 65% 48%, rgba(33,182,243,.07), transparent 60%),
+        radial-gradient(ellipse 35% 35% at 15% 25%, rgba(78,161,255,.05), transparent 55%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: .9fr 1.1fr;
+      gap: 56px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 22px;
+    }
+    .hero-eyebrow::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+    h1 {
+      font-size: clamp(42px, 5.8vw, 76px);
+      line-height: .92; letter-spacing: -.055em; font-weight: 900;
+      margin-bottom: 24px;
+    }
+    h1 em { font-style: normal; color: var(--blue2); text-shadow: 0 0 36px rgba(33,182,243,.28); }
+    .hero-lead {
+      font-size: 17px; line-height: 1.72; color: var(--muted);
+      max-width: 500px; margin-bottom: 34px;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; letter-spacing: .04em;
+      transition: .15s; cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0B7CFF, #0553D0);
+      color: #fff; box-shadow: 0 12px 32px rgba(11,124,255,.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 44px rgba(11,124,255,.42); }
+    .btn-ghost {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.14); color: var(--white);
+    }
+    .btn-ghost:hover { border-color: rgba(33,182,243,.45); background: rgba(33,182,243,.07); }
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      font-size: 12px; color: var(--soft); letter-spacing: .04em;
+    }
+    .hero-tags span { display: flex; align-items: center; gap: 6px; }
+    .hero-tags span::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* App screenshot */
+    .app-frame {
+      position: relative; border-radius: var(--r);
+      border: 1px solid rgba(33,182,243,.2);
+      background: linear-gradient(160deg, rgba(13,24,36,.9), rgba(4,8,13,.97));
+      box-shadow: 0 40px 100px rgba(0,0,0,.65), 0 0 0 1px rgba(33,182,243,.07);
+      overflow: hidden;
+    }
+    .app-frame::after {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(135deg, rgba(33,182,243,.12), transparent 40%);
+    }
+    .app-bar {
+      height: 34px; background: rgba(7,16,26,.92);
+      border-bottom: 1px solid rgba(33,182,243,.12);
+      display: flex; align-items: center; padding: 0 14px; gap: 7px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dr { background: #FF5F57; } .dy { background: #FEBC2E; } .dg { background: #28C840; }
+    .app-bar-title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 11px; color: var(--soft); letter-spacing: .05em;
+    }
+    .app-frame img { width: 100%; display: block; position: relative; z-index: 1; }
+    .app-waveform {
+      display: flex; align-items: flex-end; gap: 2px; height: 28px;
+      padding: 0 14px 6px;
+      background: rgba(4,8,14,.7);
+      border-top: 1px solid rgba(33,182,243,.08);
+      position: relative; z-index: 1;
+    }
+    .wb {
+      flex: 1;
+      background: linear-gradient(to top, rgba(33,182,243,.55), rgba(33,182,243,.12));
+      border-radius: 1px 1px 0 0;
+      animation: wb var(--d,.8s) ease-in-out infinite alternate;
+    }
+    @keyframes wb { from { transform: scaleY(.12); } to { transform: scaleY(1); } }
+
+    /* ── STATS ── */
+    .stats-band {
+      border-top: 1px solid rgba(33,182,243,.1);
+      border-bottom: 1px solid rgba(33,182,243,.1);
+      background: rgba(13,24,36,.55);
+      padding: 22px 0;
+    }
+    .stats-row { display: flex; justify-content: space-evenly; flex-wrap: wrap; gap: 20px; }
+    .stat { text-align: center; min-width: 110px; }
+    .stat-val {
+      font-size: clamp(20px, 2.8vw, 30px); font-weight: 900; letter-spacing: -.04em;
+    }
+    .stat-val em { font-style: normal; color: var(--blue2); }
+    .stat-lbl { font-size: 11px; color: var(--soft); letter-spacing: .1em; text-transform: uppercase; margin-top: 3px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 84px 0; }
+    .section-tag {
+      font-size: 11px; font-weight: 800; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--blue); display: block; margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(30px, 4.2vw, 50px);
+      font-weight: 900; letter-spacing: -.04em; line-height: 1.04; margin-bottom: 14px;
+    }
+    .section-lead { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 560px; }
+
+    /* ── FEATURES ── */
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 14px; margin-top: 48px;
+    }
+    .feat {
+      padding: 26px; border-radius: var(--r);
+      border: 1px solid rgba(33,182,243,.11);
+      background: rgba(13,24,36,.52);
+      transition: .2s; position: relative; overflow: hidden;
+    }
+    .feat::before {
+      content: ""; position: absolute; inset: 0; border-radius: inherit;
+      background: radial-gradient(circle at 20% 0%, var(--fg, rgba(33,182,243,.1)), transparent 55%);
+      opacity: 0; transition: .3s;
+    }
+    .feat:hover { border-color: rgba(33,182,243,.26); transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.3); }
+    .feat:hover::before { opacity: 1; }
+    .feat.g  { --fg: rgba(34,197,94,.1); }
+    .feat.p  { --fg: rgba(168,85,247,.1); }
+    .feat.o  { --fg: rgba(249,115,22,.1); }
+    .feat.am { --fg: rgba(245,158,11,.1); }
+    .feat.r  { --fg: rgba(255,49,88,.1); }
+    .feat-icon {
+      width: 42px; height: 42px; border-radius: 11px;
+      display: grid; place-items: center; margin-bottom: 16px;
+      background: rgba(33,182,243,.08); border: 1px solid rgba(33,182,243,.18);
+    }
+    .feat.g  .feat-icon { background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.2); }
+    .feat.p  .feat-icon { background: rgba(168,85,247,.08); border-color: rgba(168,85,247,.2); }
+    .feat.o  .feat-icon { background: rgba(249,115,22,.08); border-color: rgba(249,115,22,.2); }
+    .feat.am .feat-icon { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); }
+    .feat.r  .feat-icon { background: rgba(255,49,88,.08);  border-color: rgba(255,49,88,.2); }
+    .feat-icon svg { width: 20px; height: 20px; color: var(--blue2); }
+    .feat.g  .feat-icon svg { color: var(--green); }
+    .feat.p  .feat-icon svg { color: var(--purple); }
+    .feat.o  .feat-icon svg { color: var(--orange); }
+    .feat.am .feat-icon svg { color: var(--amber); }
+    .feat.r  .feat-icon svg { color: var(--red); }
+    .feat h3 { font-size: 15px; font-weight: 700; margin-bottom: 9px; }
+    .feat p  { font-size: 13px; color: var(--muted); line-height: 1.62; }
+
+    /* ── WORKSPACES ── */
+    .ws-section {
+      border-top: 1px solid rgba(33,182,243,.08);
+      background: linear-gradient(180deg, transparent, rgba(13,24,36,.35), transparent);
+    }
+    .ws-header { text-align: center; margin-bottom: 52px; }
+    .ws-header .section-lead { margin: 0 auto; }
+    .ws-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .ws-card {
+      border-radius: var(--r); overflow: hidden;
+      border: 1px solid rgba(33,182,243,.15);
+      background: rgba(11,20,30,.8);
+      box-shadow: 0 22px 65px rgba(0,0,0,.32);
+      transition: .2s;
+    }
+    .ws-card:hover { border-color: rgba(33,182,243,.28); transform: translateY(-4px);
+      box-shadow: 0 30px 80px rgba(0,0,0,.44); }
+    .ws-card.editor { border-color: rgba(168,85,247,.16); }
+    .ws-card.editor:hover { border-color: rgba(168,85,247,.35); }
+    .ws-body { padding: 30px; }
+    .ws-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+      background: rgba(33,182,243,.1); color: var(--blue2);
+      border: 1px solid rgba(33,182,243,.18); margin-bottom: 16px;
+    }
+    .ws-card.editor .ws-badge {
+      background: rgba(168,85,247,.1); color: #C084FC;
+      border-color: rgba(168,85,247,.2);
+    }
+    .ws-body h3 { font-size: 24px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 10px; }
+    .ws-body p  { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+    .checks { list-style: none; display: grid; gap: 8px; }
+    .checks li {
+      font-size: 13px; color: var(--muted);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .checks li::before {
+      content: "✓"; width: 18px; height: 18px; flex: none; border-radius: 50%;
+      background: linear-gradient(135deg,#0B7CFF,#0553D0);
+      color: #fff; font-size: 10px; font-weight: 900;
+      display: grid; place-items: center;
+      box-shadow: 0 0 8px rgba(11,124,255,.22);
+    }
+    .ws-card.editor .checks li::before {
+      background: linear-gradient(135deg,#A855F7,#7C3AED);
+      box-shadow: 0 0 8px rgba(168,85,247,.22);
+    }
+    .ws-img { width: 100%; display: block; border-top: 1px solid rgba(33,182,243,.1); }
+    .ws-card.editor .ws-img { border-color: rgba(168,85,247,.1); }
+
+    /* ── BROADCAST ── */
+    .bc-card {
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 48px; align-items: center;
+      padding: 52px; border-radius: var(--r);
+      border: 1px solid rgba(33,182,243,.15);
+      background:
+        radial-gradient(ellipse at 88% 50%, rgba(33,182,243,.09), transparent 44%),
+        rgba(11,20,30,.88);
+      box-shadow: 0 26px 75px rgba(0,0,0,.28);
+      position: relative; overflow: hidden;
+    }
+    .bc-card::before {
+      content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 55%;
+      background: repeating-linear-gradient(
+        90deg, transparent 0 22px, rgba(33,182,243,.035) 22px 24px, transparent 24px 46px
+      );
+      pointer-events: none;
+    }
+    .bc-content { position: relative; z-index: 1; }
+    .bc-content .section-lead { margin-bottom: 26px; }
+    .bc-img { position: relative; z-index: 1; display: flex; justify-content: center; }
+    .bc-img img { max-width: 280px; filter: drop-shadow(0 0 36px rgba(33,182,243,.22)); }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { border-top: 1px solid rgba(33,182,243,.08); }
+    .how-header { text-align: center; margin-bottom: 52px; }
+    .steps {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 0; position: relative;
+    }
+    .steps::before {
+      content: ""; position: absolute;
+      top: 27px; left: 12.5%; right: 12.5%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(33,182,243,.28), transparent);
+    }
+    .step { padding: 0 18px; text-align: center; }
+    .step-n {
+      width: 54px; height: 54px; border-radius: 50%;
+      border: 1px solid rgba(33,182,243,.28);
+      background: rgba(33,182,243,.07);
+      display: grid; place-items: center; margin: 0 auto 18px;
+      font-size: 19px; font-weight: 900; color: var(--blue2);
+      position: relative; z-index: 1;
+    }
+    .step h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-card {
+      text-align: center; padding: 70px 40px;
+      border-radius: var(--r);
+      border: 1px solid rgba(33,182,243,.18);
+      background:
+        radial-gradient(ellipse 65% 55% at 50% 50%, rgba(33,182,243,.06), transparent 62%),
+        rgba(11,20,30,.9);
+      box-shadow: 0 30px 85px rgba(0,0,0,.38);
+      position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: ""; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent 0 28px, rgba(33,182,243,.018) 28px 29px
+      );
+      pointer-events: none;
+    }
+    .cta-card > * { position: relative; z-index: 1; }
+    .cta-logo { width: 64px; margin: 0 auto 24px; filter: drop-shadow(0 0 24px rgba(33,182,243,.2)); }
+    .cta-card h2 { max-width: 680px; margin: 0 auto 14px; }
+    .cta-card p  { color: var(--muted); font-size: 16px; margin-bottom: 30px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .cta-note { font-size: 12px; color: var(--soft); margin-top: 18px; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid rgba(33,182,243,.1); padding: 30px 0; }
+    .foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .foot-logo { height: 28px; opacity: .82; }
+    .foot-links { display: flex; gap: 22px; font-size: 12px; color: var(--soft); }
+    .foot-links a:hover { color: var(--blue2); }
+    .foot-copy { font-size: 12px; color: var(--soft); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: .65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1020px) {
+      .nav-links { display: none; }
+      .hero-inner, .ws-grid, .bc-card { grid-template-columns: 1fr; }
+      .feat-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .steps::before { display: none; }
+      .bc-img { order: -1; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 52px 0 44px; }
+      .feat-grid, .steps { grid-template-columns: 1fr; }
+      .cta-card { padding: 48px 22px; }
+      .foot { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav-shell">
+  <div class="wrap">
+    <nav>
+      <a href="#">
+        <img class="nav-logo" src="site-assets/AirForge_logo_horizontal_transparent.png" alt="AirForge Studio">
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#workspaces">Workspaces</a>
+        <a href="#broadcast">Broadcast</a>
+        <a href="#how">How It Works</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a class="nav-cta" href="#contact">Get in Touch</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-inner">
+
+    <div class="reveal">
+      <div class="hero-eyebrow">Built for radio</div>
+      <h1>Audio production<br><em>that keeps up.</em></h1>
+      <p class="hero-lead">
+        AirForge Studio is a broadcast-first production suite for radio teams.
+        Multitrack Producer, precision waveform Editor, SCOT metadata,
+        Intro/EOM markers, batch processing, and WideOrbit-ready export —
+        all in one focused application.
+      </p>
+      <div class="hero-btns">
+        <a class="btn btn-primary" href="#contact">Get in Touch</a>
+        <a class="btn btn-ghost"   href="#features">Explore Features</a>
+      </div>
+      <div class="hero-tags">
+        <span>Windows 10 / 11</span>
+        <span>WideOrbit Ready</span>
+        <span>SCOT Metadata</span>
+        <span>Intro / EOM Markers</span>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="app-frame">
+        <div class="app-bar" style="position:relative;">
+          <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="app-bar-title">AirForge Studio — Producer</span>
+        </div>
+        <img src="site-assets/AirForge_website_hero_1920x720.png" alt="AirForge Studio interface">
+        <div class="app-waveform">
+          <!-- 44 animated bars -->
+          <div class="wb" style="--d:.58s"></div><div class="wb" style="--d:.74s"></div>
+          <div class="wb" style="--d:.63s"></div><div class="wb" style="--d:.50s"></div>
+          <div class="wb" style="--d:.85s"></div><div class="wb" style="--d:.68s"></div>
+          <div class="wb" style="--d:.77s"></div><div class="wb" style="--d:.54s"></div>
+          <div class="wb" style="--d:.71s"></div><div class="wb" style="--d:.89s"></div>
+          <div class="wb" style="--d:.62s"></div><div class="wb" style="--d:.79s"></div>
+          <div class="wb" style="--d:.55s"></div><div class="wb" style="--d:.82s"></div>
+          <div class="wb" style="--d:.66s"></div><div class="wb" style="--d:.73s"></div>
+          <div class="wb" style="--d:.60s"></div><div class="wb" style="--d:.88s"></div>
+          <div class="wb" style="--d:.76s"></div><div class="wb" style="--d:.53s"></div>
+          <div class="wb" style="--d:.69s"></div><div class="wb" style="--d:.81s"></div>
+          <div class="wb" style="--d:.64s"></div><div class="wb" style="--d:.91s"></div>
+          <div class="wb" style="--d:.72s"></div><div class="wb" style="--d:.57s"></div>
+          <div class="wb" style="--d:.84s"></div><div class="wb" style="--d:.67s"></div>
+          <div class="wb" style="--d:.75s"></div><div class="wb" style="--d:.61s"></div>
+          <div class="wb" style="--d:.87s"></div><div class="wb" style="--d:.78s"></div>
+          <div class="wb" style="--d:.52s"></div><div class="wb" style="--d:.65s"></div>
+          <div class="wb" style="--d:.90s"></div><div class="wb" style="--d:.56s"></div>
+          <div class="wb" style="--d:.70s"></div><div class="wb" style="--d:.83s"></div>
+          <div class="wb" style="--d:.62s"></div><div class="wb" style="--d:.76s"></div>
+          <div class="wb" style="--d:.59s"></div><div class="wb" style="--d:.86s"></div>
+          <div class="wb" style="--d:.74s"></div><div class="wb" style="--d:.51s"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="wrap stats-row">
+    <div class="stat"><div class="stat-val">Up to <em>16</em> tracks</div><div class="stat-lbl">Producer Timeline</div></div>
+    <div class="stat"><div class="stat-val"><em>One-click</em> export</div><div class="stat-lbl">WideOrbit Ready</div></div>
+    <div class="stat"><div class="stat-val"><em>Live</em> effects</div><div class="stat-lbl">Real-Time FX Chain</div></div>
+    <div class="stat"><div class="stat-val"><em>Batch</em> tools</div><div class="stat-lbl">Bulk File Processing</div></div>
+    <div class="stat"><div class="stat-val"><em>SCOT</em> metadata</div><div class="stat-lbl">Embedded in WAV</div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="section-tag">Everything radio needs</span>
+      <h2>Built for one job.<br>Done right.</h2>
+      <p class="section-lead">Every feature in AirForge exists because radio production teams need it. Nothing more, nothing that gets in the way.</p>
+    </div>
+    <div class="feat-grid">
+
+      <div class="feat reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4v16M12 4v16M18 4v16M4 8h4M10 14h4M16 10h4"/></svg>
+        </div>
+        <h3>Multitrack Producer</h3>
+        <p>Up to 16 tracks. Drag, arrange, trim, split, and fade clips. Build carts, beds, VO stacks, stingers, and promos fast.</p>
+      </div>
+
+      <div class="feat g reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2-6 4 12 3-9 2 3h4"/></svg>
+        </div>
+        <h3>Waveform Editor</h3>
+        <p>Stereo L/R display with sample-accurate selection. Cut, copy, paste, silence, and fade with full undo history.</p>
+      </div>
+
+      <div class="feat p reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21V9M7 14a5 5 0 1 1 10 0M5 19a9 9 0 1 1 14 0"/></svg>
+        </div>
+        <h3>SCOT / WideOrbit Metadata</h3>
+        <p>Asset ID, title, artist, outcue, dates, Intro and EOM markers — all embedded in the WAV file on export.</p>
+      </div>
+
+      <div class="feat o reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17h7M17 14v7"/></svg>
+        </div>
+        <h3>Batch Processing</h3>
+        <p>Convert, normalize, rename, tag, and process entire folders of files. Consistent standards across your whole library in one pass.</p>
+      </div>
+
+      <div class="feat am reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 12h2M10 12h10M4 17h12M20 17h0"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="17" r="2"/></svg>
+        </div>
+        <h3>Effects Suite</h3>
+        <p>Phone Filter, AM Radio, VO Brightener, HPF/LPF, Delay, Room, Hall, and Reverb — live in the Producer or applied in the Editor.</p>
+      </div>
+
+      <div class="feat r reveal">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        </div>
+        <h3>Smooth, Reliable Playback</h3>
+        <p>The Phoenix engine keeps up with fast radio workflows — stutter-free across multiple tracks with effects, instant transport response.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORKSPACES -->
+<section class="ws-section" id="workspaces">
+  <div class="wrap">
+    <div class="ws-header reveal">
+      <span class="section-tag">Two workspaces, one workflow</span>
+      <h2>One app. Two ways to work.</h2>
+      <p class="section-lead">Switch between workspaces without losing your place. Markers, metadata, and session state follow you everywhere.</p>
+    </div>
+    <div class="ws-grid">
+      <div class="ws-card reveal">
+        <div class="ws-body">
+          <div class="ws-badge">Producer</div>
+          <h3>Build and arrange</h3>
+          <p>Multitrack timeline for fast drag-and-drop radio production. Build carts, beds, stacks, stingers, and promos.</p>
+          <ul class="checks">
+            <li>Up to 16 tracks — add and remove as needed</li>
+            <li>Drag, trim, split, copy, paste, and fade clips</li>
+            <li>Per-track mute, solo, volume, and FX chain</li>
+            <li>Intro/EOM marker flags directly on the ruler</li>
+            <li>Export directly from the session</li>
+          </ul>
+        </div>
+        <img class="ws-img" src="site-assets/AirForge_website_hero_1920x720.png" alt="AirForge Producer">
+      </div>
+      <div class="ws-card editor reveal">
+        <div class="ws-body">
+          <div class="ws-badge">Editor</div>
+          <h3>Edit with precision</h3>
+          <p>Stereo L/R waveform view for detailed editing, marker placement, metadata entry, and broadcast-spec export.</p>
+          <ul class="checks">
+            <li>Sample-accurate selection, L and R channels</li>
+            <li>Cut, copy, paste, silence, and fade</li>
+            <li>Intro/EOM markers matching the Producer style</li>
+            <li>SCOT metadata directly in the Editor panel</li>
+            <li>Save, Save As, and WideOrbit export</li>
+          </ul>
+        </div>
+        <img class="ws-img" src="site-assets/AirForge_splash_1440x840.png" alt="AirForge Editor">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BROADCAST -->
+<section id="broadcast">
+  <div class="wrap">
+    <div class="bc-card reveal">
+      <div class="bc-content">
+        <span class="section-tag">Radio-first, not an afterthought</span>
+        <h2>Built for broadcast.<br>Not generic DAW clutter.</h2>
+        <p class="section-lead">AirForge focuses on what radio teams do every day — preparing carts, editing endorsements, building promos, setting markers, writing metadata, recording, processing, and exporting clean broadcast-ready audio.</p>
+        <ul class="checks" style="margin-top:24px">
+          <li>WideOrbit profile with SCOT metadata workflow</li>
+          <li>Intro and EOM markers across both workspaces</li>
+          <li>Broadcast WAV output for any automation system</li>
+          <li>Expandable broadcast profiles for more platforms</li>
+        </ul>
+      </div>
+      <div class="bc-img">
+        <img src="site-assets/AirForge_AF_monogram_transparent_512.png" alt="AirForge">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="wrap">
+    <div class="how-header reveal">
+      <span class="section-tag">Simple workflow</span>
+      <h2>From raw audio to broadcast cart<br>in four steps.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-n">01</div>
+        <h3>Drop your files</h3>
+        <p>Drag WAV or MP3 files onto any track. AirForge handles conforming automatically — no format juggling.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">02</div>
+        <h3>Arrange and edit</h3>
+        <p>Build your production in the Producer or open clips in the Editor for detailed waveform work.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">03</div>
+        <h3>Set markers and metadata</h3>
+        <p>Place Intro and EOM cues. Fill in SCOT metadata. Audition the full mix before committing.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-n">04</div>
+        <h3>Export broadcast-ready</h3>
+        <p>One click exports a WideOrbit-ready WAV with all markers and metadata embedded. Done.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact">
+  <div class="wrap">
+    <div class="cta-card reveal">
+      <img class="cta-logo" src="site-assets/AirForge_AF_icon_512.png" alt="AirForge">
+      <h2>Ready to build better broadcast audio?</h2>
+      <p>AirForge Studio is in active development. Get in touch to learn more, request a demo, or ask about availability.</p>
+      <div class="cta-btns">
+        <a class="btn btn-primary" href="mailto:info@airforgestudio.com">Contact Us</a>
+        <a class="btn btn-ghost"   href="#features">Explore Features</a>
+      </div>
+      <p class="cta-note">Windows 10 / 11 &nbsp;·&nbsp; WideOrbit Ready &nbsp;·&nbsp; Built for Radio</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot">
+    <img class="foot-logo" src="site-assets/AirForge_logo_horizontal_transparent.png" alt="AirForge Studio">
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#workspaces">Workspaces</a>
+      <a href="#broadcast">Broadcast</a>
+      <a href="mailto:info@airforgestudio.com">Contact</a>
+    </div>
+    <div class="foot-copy">© 2026 AirForge Studio. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
