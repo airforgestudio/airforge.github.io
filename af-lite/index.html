@@ -212,6 +212,7 @@
     .exportBtn{ flex:1; }
   }
 
+<<<<<<< HEAD:af-lite/index.html
 
   /* Extreme mobile usability layer */
   .mobileDock,.mobileSheetBar{display:none}
@@ -231,6 +232,8 @@
     .ctxItem{padding:13px 15px;font-size:15px}.fxPopover{max-width:calc(100vw - 20px)}
   }
   @media(max-width:480px){.timelineCol>.ruler,.timelineCol>.tracks{min-width:820px}.topBar{padding-right:56px}.mobileDock{right:8px}.mobileDock button{padding:0 13px;font-size:12px}.transport .timeReadout{min-width:118px;font-size:18px}}
+=======
+>>>>>>> 679a426547edba3ea22e41089df384450468008b:af-lite.html
 </style>
 </head>
 <body>
@@ -1563,6 +1566,7 @@ function makeMp3Id3Tag(){
   const body=concatBytes(frames);
   return concatBytes([fourCC('ID3'),Uint8Array.of(3,0,0),synchsafe(body.length),body]);
 }
+<<<<<<< HEAD:af-lite/index.html
 let lameLoadPromise=null;
 function loadScriptOnce(src,id){
   return new Promise((resolve,reject)=>{
@@ -1600,6 +1604,19 @@ function loadLame(){
     throw new Error('MP3 encoder could not be loaded from the local copy or either backup source. WAV export is still available.'+(lastError?' '+lastError.message:''));
   })();
   return lameLoadPromise;
+=======
+function loadLame(){
+  if(window.lamejs) return Promise.resolve(window.lamejs);
+  return new Promise((resolve,reject)=>{
+    const old=document.getElementById('airforgeLameJs');
+    if(old){ old.addEventListener('load',()=>resolve(window.lamejs),{once:true}); return; }
+    const sc=document.createElement('script'); sc.id='airforgeLameJs';
+    sc.src='https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/dist/lame.min.js';
+    sc.onload=()=>window.lamejs?resolve(window.lamejs):reject(new Error('MP3 encoder did not initialize.'));
+    sc.onerror=()=>reject(new Error('MP3 encoder could not be loaded. Check your internet connection or export WAV.'));
+    document.head.appendChild(sc);
+  });
+>>>>>>> 679a426547edba3ea22e41089df384450468008b:af-lite.html
 }
 async function encodeMp3(audioBuffer){
   const lame=await loadLame();
