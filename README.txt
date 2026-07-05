@@ -1,15 +1,10 @@
-AIRFORGE LAUNCH WEBSITE
+AIRFORGE LAUNCH WEBSITE — MOBILE PACKAGE
 
-Open index.html to preview the launch homepage.
+Open index.html to preview the launch homepage. AF | Lite is in af-lite/index.html.
+Upload the entire folder without changing paths and serve it over HTTPS for microphone recording and PWA support.
 
-Included:
-- index.html: responsive launch homepage
-- af-lite.html: working AF | Lite browser trial
-- motion.html: animated AirForge logo presentation
-- assets/: approved logo assets, screenshots, and motion audio
+LOCAL MP3 ENCODER
+Place lamejs.iife.js in af-lite/vendor/. AF | Lite loads that local path first. External CDNs remain only as emergency fallbacks.
+The encoder file is not included because the current build environment could not fetch the third-party package.
 
-Deployment:
-Upload the entire folder to the public web root. Keep the folder structure intact.
-The AF | Lite trial runs locally in the browser and does not upload source audio.
-
-Before public launch, replace the mailto launch-updates link with your preferred signup form or Firebase-backed account flow.
+Mobile improvements include a bottom thumb-friendly transport, scrollable workstation canvas, larger controls, full-screen metadata sheet, sticky session controls, PWA manifest, and offline shell caching.
