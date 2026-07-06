@@ -1,0 +1,13 @@
+AirForge public-site polish pass
+
+- Fixed hero headline clipping.
+- Removed the motion-card Play button and descriptive caption overlay.
+- Updated AF | Lite wording from public-trial language to Studio-user entitlement language.
+- Replaced the developer-centric Undo/Save spotlight with Precision Timeline Editing.
+- Rewrote feature copy around customer outcomes.
+- Updated launch status to Private beta for Windows.
+- Clarified local audio processing versus online account/license verification.
+- Privacy-scrubbed the Studio screenshot:
+  - removed personal Windows username/path
+  - replaced real filenames and project names with neutral demo assets
+  - replaced preview metadata with fictional demo content

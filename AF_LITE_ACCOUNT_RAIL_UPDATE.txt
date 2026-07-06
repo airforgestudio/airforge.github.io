@@ -1,0 +1,8 @@
+AF | Lite account rail update
+
+- Moved account identity and account actions out of Broadcast Profile.
+- Added a dedicated slim bottom account rail beneath the transport.
+- Displays the full signed-in email address, not only the text before @.
+- Added the explicit label: Signed in as.
+- Kept Reset Password and Sign Out together at the right side of the rail.
+- Preserved mobile responsiveness and entitlement behavior.
